@@ -41,9 +41,12 @@ void floydWarshall(vector<vector<int>>& graph) {
 
     // Вывод кратчайших путей
     cout << "Кратчайшие пути между всеми парами вершин:" << endl;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (dist[i][j] == INF)
+    for (int i = -1; i < n; i++) {
+        cout << i + 1 << " |";
+        for (int j = 1; j < n; j++) {
+            if (i == -1)
+                cout << "____" << j;
+            else if (dist[i][j] == INF)
                 cout << setw(5) << "INF";
             else
                 cout << setw(5) << dist[i][j];
@@ -66,7 +69,7 @@ void inputGraph(vector<vector<int>>& graph) {
     }
 
     cout << "Введите рёбра в формате: начальная_вершина конечная_вершина вес" << endl;
-    cout << "Если хотите закончить ввод рёбер, введите -1 -1 -1" << endl;
+    cout << "Для завершения ввода, введите -1 -1 -1" << endl;
 
     while (true) {
         int u, v, weight;
