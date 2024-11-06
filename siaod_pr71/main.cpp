@@ -1,6 +1,5 @@
-// main.cpp
 #include <iostream>
-#include "AVLTree.cpp" // Подключаем реализацию AVLTree
+#include "AVLTree.cpp"
 
 using namespace std;
 
