@@ -38,6 +38,7 @@ public:
 
     // Выполняет правый поворот поддерева с корнем y
     Node* rotateRight(Node* y) {
+        cout << "Right Rotation" << endl;
         Node* x = y->left;
         Node* T2 = x->right;
 
@@ -54,6 +55,7 @@ public:
 
     // Выполняет левый поворот поддерева с корнем x
     Node* rotateLeft(Node* x) {
+        cout << "Left Rotation" << endl;
         Node* y = x->right;
         Node* T2 = y->left;
 
@@ -137,7 +139,7 @@ public:
         // Печатаем правое поддерево
         printTree(root->right, space);
 
-        // Печатаем текущий узел с отступом
+        // Печатаем текущий узел с отступом (корень)
         cout << endl;
         cout << setw(space) << root->key;
 

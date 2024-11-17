@@ -45,7 +45,7 @@ void floydWarshall(vector<vector<int>>& graph) {
         cout << i + 1 << " |";
         for (int j = 1; j < n; j++) {
             if (i == -1)
-                cout << "____" << j;
+                cout << "____" << j+1;
             else if (dist[i][j] == INF)
                 cout << setw(5) << "INF";
             else
