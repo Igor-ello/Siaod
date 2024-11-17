@@ -47,8 +47,32 @@ void shannonFano(vector<Symbol>& symbols, int start, int end) {
     shannonFano(symbols, splitPoint + 1, end);
 }
 
+// Функция декодирования текста
+string decodeShannonFano(const string& encodedText, const vector<Symbol>& symbols) {
+    map<string, char> codeToSymbol;
+    for (const auto& sym : symbols) {
+        codeToSymbol[sym.code] = sym.ch;
+    }
+
+    string decodedText;
+    string currentCode;
+
+    for (char bit : encodedText) {
+        currentCode += bit;
+
+        // Если текущий код найден в таблице, добавляем символ в результат
+        if (codeToSymbol.find(currentCode) != codeToSymbol.end()) {
+            decodedText += codeToSymbol[currentCode];
+            currentCode.clear(); // Сбрасываем текущий код
+        }
+    }
+
+    return decodedText;
+}
+
 // Функция для выполнения алгоритма Шеннона-Фано на тестовом тексте
 int fano() {
+    //string text = "Ана-дэус-рики-паки, Дормы-кормыконсту-таки, Энус-дэус-кана-дэусБАЦ!";
     string text = "Ana-deus-riki-paki, Dormy-kormyconstu-taki, Enus-deus-cana-deusBAM!";
     map<char, int> frequency;
 
@@ -70,6 +94,7 @@ int fano() {
     for (int i = 0; i < symbols.size(); i++) {
         cout << symbols[i].toString() << endl;
     }
+    cout << endl;
 
     // Строим коды Шеннона-Фано
     shannonFano(symbols, 0, symbols.size() - 1);
@@ -86,15 +111,31 @@ int fano() {
     // Вычисляем процент сжатия
     double compressionRatio = 100.0 - (100.0 * compressedSize / originalSize);
 
+    // Кодируем текст
+    string encodedText;
+    for (char ch : text) {
+        for (const auto& sym : symbols) {
+            if (sym.ch == ch) {
+                encodedText += sym.code;
+                break;
+            }
+        }
+    }
+
+    // Восстанавливаем текст
+    string decodedText = decodeShannonFano(encodedText, symbols);
+
     // Выводим результаты
     cout << "Символ\tЧастота\tКод\n";
     for (const auto& sym : symbols) {
         cout << sym.ch << "\t" << sym.probability << "\t" << sym.code << "\n";
     }
 
-    cout << "Оригинальный размер: " << originalSize << " бит" << endl;
+    cout << "\nОригинальный размер: " << originalSize << " бит" << endl;
     cout << "Сжатый размер: " << compressedSize << " бит" << endl;
     cout << "Процент сжатия: " << compressionRatio << "%" << endl;
+    cout << "Закодированный текст: " << encodedText << endl;
+    cout << "Восстановленный текст: " << decodedText << endl;
 
     return 0;
 }
