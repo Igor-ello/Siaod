@@ -1,5 +1,5 @@
 #include "Fano1.h"
-
+#include "Tree.h"
 using namespace std;
 
 // Метод для форматированного вывода параметров символа
@@ -70,16 +70,29 @@ string decodeShannonFano(const string& encodedText, const vector<Symbol>& symbol
     return decodedText;
 }
 
+
+
 // Функция для выполнения алгоритма Шеннона-Фано на тестовом тексте
 int fano() {
     //string text = "Ана-дэус-рики-паки, Дормы-кормыконсту-таки, Энус-дэус-кана-дэусБАЦ!";
     string text = "Ana-deus-riki-paki, Dormy-kormyconstu-taki, Enus-deus-cana-deusBAM!";
+    cout << text.size() << endl;
     map<char, int> frequency;
 
     // Подсчёт частоты символов в тексте
     for (char ch : text) {
         frequency[ch]++;
     }
+
+    // for (auto pair: frequency) {
+    //     cout << pair.first << " " << pair.second << endl;
+    // }
+    // cout << endl;
+    //
+    // // Построение дерева Хаффмана
+    // NodeTree* huffmanRoot = buildHuffmanTree(frequency);
+    // cout << "\nДерево кодирования Хаффмана:\n";
+    // printHuffmanTree(huffmanRoot);
 
     vector<Symbol> symbols;
     for (const auto& pair : frequency) {
@@ -99,18 +112,6 @@ int fano() {
     // Строим коды Шеннона-Фано
     shannonFano(symbols, 0, symbols.size() - 1);
 
-    // Вычисляем исходный размер (в битах)
-    int originalSize = text.size() * 8; // 8 бит на символ
-
-    // Вычисляем сжатый размер (в битах)
-    int compressedSize = 0;
-    for (const auto& sym : symbols) {
-        compressedSize += sym.code.size() * frequency[sym.ch]; // Умножаем длину кода на частоту символа
-    }
-
-    // Вычисляем процент сжатия
-    double compressionRatio = 100.0 - (100.0 * compressedSize / originalSize);
-
     // Кодируем текст
     string encodedText;
     for (char ch : text) {
@@ -122,20 +123,53 @@ int fano() {
         }
     }
 
-    // Восстанавливаем текст
+    // Вычисляем исходный размер (в битах, кодировка ASCII)
+    int originalSize = text.size() * 8;
+
+    // Вычисляем сжатый размер (в битах)
+    int compressedSize = 0;
+    for (const auto& sym : symbols) {
+        compressedSize += sym.code.size() * frequency[sym.ch];
+    }
+
+    // Коэффициенты сжатия
+    double compressionRatio = 100.0 - (100.0 * compressedSize / originalSize);
+
+    // Равномерный код (фиксированная длина)
+    int uniformCodeLength = ceil(log2(symbols.size()));
+    int uniformCodeSize = uniformCodeLength * text.size();
+    double compressionRatioUniform = 100.0 - (100.0 * compressedSize / uniformCodeSize);
+
+    // Средняя длина кода
+    double averageCodeLength = 0.0;
+    for (const auto& sym : symbols) {
+        averageCodeLength += sym.code.size() * sym.probability;
+    }
+
+    // Дисперсия длины кода
+    double variance = 0.0;
+    for (const auto& sym : symbols) {
+        double deviation = sym.code.size() - averageCodeLength;
+        variance += sym.probability * deviation * deviation;
+    }
+
+    // Восстановленный текст
     string decodedText = decodeShannonFano(encodedText, symbols);
 
-    // Выводим результаты
-    cout << "Символ\tЧастота\tКод\n";
+    // Вывод результатов
+    cout << "\nСимвол\tЧастота\tКод\n";
     for (const auto& sym : symbols) {
         cout << sym.ch << "\t" << sym.probability << "\t" << sym.code << "\n";
     }
 
-    cout << "\nОригинальный размер: " << originalSize << " бит" << endl;
-    cout << "Сжатый размер: " << compressedSize << " бит" << endl;
-    cout << "Процент сжатия: " << compressionRatio << "%" << endl;
-    cout << "Закодированный текст: " << encodedText << endl;
-    cout << "Восстановленный текст: " << decodedText << endl;
+    cout << "\nОригинальный размер (ASCII): " << originalSize << " бит\n";
+    cout << "Сжатый размер: " << compressedSize << " бит\n";
+    cout << "Процент сжатия (ASCII): " << compressionRatio << "%\n";
+    cout << "Процент сжатия (равномерный код): " << compressionRatioUniform << "%\n";
+    cout << "Средняя длина кода: " << averageCodeLength << "\n";
+    cout << "Дисперсия длины кода: " << variance << "\n";
+    cout << "Закодированный текст: " << encodedText << "\n";
+    cout << "Восстановленный текст: " << decodedText << "\n";
 
     return 0;
 }

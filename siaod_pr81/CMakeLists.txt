@@ -12,6 +12,7 @@ add_executable(siaod_pr81
         1/Fano1.h
         2/Fano2.h
         2/Huffman.h
+        1/Tree.h
 )
 
 target_sources(siaod_pr81 PRIVATE
