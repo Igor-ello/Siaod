@@ -57,6 +57,7 @@ vector<pair<int, char>> LZ78(const string& text) {
 
 	return result;
 }
+
 int encodeLZ78() {
 	string text = "porpoterpoterporter";
 	auto encoded = LZ78(text);
