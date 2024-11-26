@@ -54,6 +54,22 @@ vector<tuple<int, int, char>> LZ77(const string& text) {
     return result;
 }
 
+
+double calculateCompressionRatio(const string& text, const vector<tuple<int, int, char>>& encoded) {
+    int originalSize = text.size(); // Размер исходного текста в битах (по 1 биту на символ)
+    int compressedSize = 0;
+
+    // Для каждого триплета (offset, length, nextChar) считаем размер в битах
+    for (const auto& tuple : encoded) {
+        compressedSize += 12;  // Для offset (при окне 5)
+        compressedSize += 5;   // Для length (при максимальной длине 5)
+        compressedSize += 8;   // Для nextChar (1 байт для символа)
+    }
+
+    double compressionRatio = 100.0 - (100.0 * compressedSize / (originalSize * 8)); // Степень сжатия в процентах
+    return compressionRatio;
+}
+
 int encodeLZ77() {
 	string text = "0010100110010000001";
 	auto encoded = LZ77(text);
@@ -66,6 +82,11 @@ int encodeLZ77() {
     cout << "(offset, length, next)\n";
     for (auto& tuple : encoded)
         cout << "(" << get<0>(tuple) << ", " << get<1>(tuple) << ", " << get<2>(tuple) << ")\n";
+    cout << endl;
+
+    // Расчёт степени сжатия
+    double compressionRatio = calculateCompressionRatio(text, encoded);
+    cout << "Степень сжатия: " << compressionRatio << "%" << endl;
 
 	return 0;
 }

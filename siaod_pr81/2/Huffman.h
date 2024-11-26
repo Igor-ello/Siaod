@@ -7,6 +7,9 @@
 
 #include <map>
 #include <string>
+#include <iostream>
+
+using namespace std;
 
 struct Node {
 	char ch;
@@ -20,9 +23,29 @@ struct Compare {
 };
 
 // Объявления функций
-Node* buildHuffmanTree(const std::string& text, std::map<char, int>& freqTable);
-void encode(Node* root, const std::string& str, std::map<char, std::string>& huffmanCode);
-std::string encodeHuffman(const std::string& text, const std::map<char, std::string>& huffmanCode);
-std::string decodeHuffman(Node* root, const std::string& encodedText);
+Node* buildHuffmanTree(const string& text, map<char, int>& freqTable);
+void encode(Node* root, const string& str, map<char, string>& huffmanCode);
+string encodeHuffman(const string& text, const map<char, string>& huffmanCode);
+string decodeHuffman(Node* root, const string& encodedText);
+// // Рекурсивная функция для вывода дерева
+// void printHuffmanTree2(Node* root, string indent = "", bool isLeft = true) {
+// 	if (root == nullptr) return;
+//
+// 	cout << indent;
+// 	if (isLeft) {
+// 		cout << "├── ";
+// 	} else {
+// 		cout << "└── ";
+// 	}
+//
+// 	if (root->ch != '\0') {
+// 		cout << "'" << root->ch << "' (" << root->freq << ")" << endl;
+// 	} else {
+// 		cout << "[" << root->freq << "]" << endl;
+// 	}
+//
+// 	printHuffmanTree2(root->left, indent + (isLeft ? "│   " : "    "), true);
+// 	printHuffmanTree2(root->right, indent + (isLeft ? "│   " : "    "), false);
+// }
 
 #endif //HUFFMAN_H

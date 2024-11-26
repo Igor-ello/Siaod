@@ -39,6 +39,11 @@ void testHuffman() {
 	for (char ch : text)
 		freqTable[ch]++;
 
+	for (const auto& pair : freqTable) {
+		cout << "Символ: '" << pair.first << "' встречается " << pair.second << " раз(а)" << endl;
+	}
+	cout << endl;
+
 	Node* root = buildHuffmanTree(text, freqTable);
 
 	map<char, string> huffmanCode;
