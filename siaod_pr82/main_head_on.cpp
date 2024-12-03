@@ -5,20 +5,18 @@
 
 using namespace std;
 
-// Перечисление для направления стены
+// Направления для управления стенами
 enum Direction { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3 };
 
-// Класс для представления замка
 class Castle
 {
 private:
-    int rows; // Количество строк в замке
-    int cols; // Количество столбцов в замке
+    int rows; // Количество строк
+    int cols; // Количество столбцов
     vector<vector<int>> walls;   // Стены представлены битовой маской
     vector<vector<bool>> visited; // Для обхода клеток
 
 public:
-    // Конструктор: инициализирует размеры замка
     Castle(int m, int n) : rows(m), cols(n)
     {
         walls.resize(rows, vector<int>(cols, 0)); // Инициализируем стены
@@ -108,7 +106,7 @@ public:
         }
     }
 
-    // Брутфорс для удаления стены и подсчёта площади объединённой комнаты
+    // Метод для удаления стены и подсчёта площади объединённой комнаты (в лоб)
     void bruteForce(int& maxCombinedArea, pair<int, int>& bestWallToRemove,
                     Direction& bestDirection, int& iterationCount)
     {

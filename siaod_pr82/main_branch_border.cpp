@@ -6,15 +6,15 @@
 
 using namespace std;
 
-// Направления для удобного управления стенами
+// Направления для управления стенами
 enum Direction { NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3 };
 
-// Класс, представляющий замок и его структуру
+
 class Castle
 {
 private:
-    int rows; //< Количество строк в замке
-    int cols; //< Количество столбцов в замке
+    int rows; // Количество строк
+    int cols; // Количество столбцов
     vector<vector<int>> walls; // Стены замка в виде битовой маски
     vector<vector<bool>> visited; // Массив для отслеживания посещённых ячеек
     vector<vector<int>> roomIds; // Идентификаторы комнат в замке
@@ -27,7 +27,6 @@ private:
     int currentRoomId = 0; // Текущий идентификатор комнаты
 
 public:
-    // Конструктор класса замка
     Castle(const int m, const int n) : rows(m), cols(n)
     {
         walls.resize(rows, vector<int>(cols, 0));
@@ -43,7 +42,8 @@ public:
         const int ny = y + dy[dir];
         if (nx >= 0 && nx < rows && ny >= 0 && ny < cols)
         {
-            walls[nx][ny] |= (1 << ((dir + 2) % 4)); // Устанавливаем стену с противоположной стороны
+            // Устанавливаем стену с противоположной стороны
+            walls[nx][ny] |= (1 << ((dir + 2) % 4));
         }
     }
 
@@ -109,41 +109,41 @@ public:
     void findBestWallToRemove(int& maxCombinedArea, pair<int, int>& wallPosition,
                           Direction& bestDir, int& iterationCount)
     {
-            maxCombinedArea = 0;
-            iterationCount = 0;
+        maxCombinedArea = 0;
+        iterationCount = 0;
 
-            for (int i = 0; i < rows; ++i)
+        for (int i = 0; i < rows; ++i)
+        {
+            for (int j = 0; j < cols; ++j)
             {
-                for (int j = 0; j < cols; ++j)
+                for (int dir = 0; dir < 4; ++dir)
                 {
-                    for (int dir = 0; dir < 4; ++dir)
+                    iterationCount++;
+
+                    const int nx = i + dx[dir];
+                    const int ny = j + dy[dir];
+
+                    if (nx >= 0 && nx < rows && ny >= 0 && ny < cols &&
+                        hasWall(i, j, static_cast<Direction>(dir)))
                     {
-                        iterationCount++;
+                        int room1 = roomIds[i][j];
+                        int room2 = roomIds[nx][ny];
 
-                        const int nx = i + dx[dir];
-                        const int ny = j + dy[dir];
-
-                        if (nx >= 0 && nx < rows && ny >= 0 && ny < cols &&
-                            hasWall(i, j, static_cast<Direction>(dir)))
+                        if (room1 != room2)
                         {
-                            int room1 = roomIds[i][j];
-                            int room2 = roomIds[nx][ny];
-
-                            if (room1 != room2)
+                            // Если комнаты разные, вычисляем объединённую площадь
+                            const int combinedArea = roomSizes[room1] + roomSizes[room2];
+                            if (combinedArea > maxCombinedArea)
                             {
-                                // Если комнаты разные, вычисляем объединённую площадь
-                                const int combinedArea = roomSizes[room1] + roomSizes[room2];
-                                if (combinedArea > maxCombinedArea)
-                                {
-                                    maxCombinedArea = combinedArea;
-                                    wallPosition = {i, j};
-                                    bestDir = static_cast<Direction>(dir);
-                                }
+                                maxCombinedArea = combinedArea;
+                                wallPosition = {i, j};
+                                bestDir = static_cast<Direction>(dir);
                             }
                         }
                     }
                 }
             }
+        }
     }
 
     // Выводит текстовую визуализацию замка
