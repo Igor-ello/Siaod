@@ -100,15 +100,36 @@ public:
                 if (!visited[i][j])
                 {
                     roomCount++;
-                    maxArea = max(maxArea, countArea(i, j));
+                    int area = countArea(i, j);
+                    maxArea = max(maxArea, area);
+
+                    // // Промежуточный вывод информации о комнате
+                    // cout << "\nПосле обнаружения комнаты " << roomCount << ":\n";
+                    // cout << "Размер комнаты: " << area << endl;
+                    //
+                    // // Выводим массив visited
+                    // cout << "Массив visited (посещённые клетки):\n";
+                    // for (int x = 0; x < rows; ++x)
+                    // {
+                    //     for (int y = 0; y < cols; ++y)
+                    //     {
+                    //         cout << visited[x][y] << " ";
+                    //     }
+                    //     cout << endl;
+                    // }
+                    //
+                    // // Выводим количество комнат и максимальную площадь на каждом шаге
+                    // cout << "Общее количество комнат на данный момент: " << roomCount << endl;
+                    // cout << "Максимальная площадь: " << maxArea << endl;
                 }
             }
         }
     }
 
+
     // Метод для удаления стены и подсчёта площади объединённой комнаты (в лоб)
     void bruteForce(int& maxCombinedArea, pair<int, int>& bestWallToRemove,
-                    Direction& bestDirection, int& iterationCount)
+                Direction& bestDirection, int& iterationCount)
     {
         maxCombinedArea = 0;
         iterationCount = 0;
@@ -123,6 +144,10 @@ public:
 
                     int nx = i + (dir == SOUTH) - (dir == NORTH);
                     int ny = j + (dir == EAST) - (dir == WEST);
+
+                    // Промежуточный вывод перед проверкой стены
+                    // cout << "Проверяем стену между клетками (" << i << ", " << j << ") и ("
+                    //      << nx << ", " << ny << ") в направлении " << dir << endl;
 
                     // Проверяем, можно ли удалить стену
                     if (nx >= 0 && nx < rows && ny >= 0 && ny < cols &&
@@ -140,11 +165,22 @@ public:
 
                         int combinedArea = area1 + area2;
 
+                        // Промежуточный вывод для объединённой площади
+                        // cout << "Объединённая площадь: " << area1 << " + " << area2 << " = "
+                        //      << combinedArea << endl;
+
                         if (combinedArea > maxCombinedArea)
                         {
+                            // Обновляем максимальную площадь и соответствующие значения
                             maxCombinedArea = combinedArea;
                             bestWallToRemove = {i, j};
                             bestDirection = static_cast<Direction>(dir);
+
+                            // Промежуточный вывод после обновления
+                            // cout << "Найдено улучшение! Новая максимальная объединённая площадь: "
+                            //      << maxCombinedArea << endl;
+                            // cout << "Стену следует удалить из клетки (" << i << ", " << j << ") "
+                            //      << "в направлении " << dir << endl;
                         }
 
                         // Восстанавливаем стену
@@ -155,6 +191,7 @@ public:
             }
         }
     }
+
 
     // Выводит планировку замка
     void printLayout()

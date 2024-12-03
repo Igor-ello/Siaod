@@ -93,17 +93,42 @@ public:
         {
             for (int j = 0; j < cols; ++j)
             {
-                if (roomIds[i][j] == -1)
+                if (roomIds[i][j] == -1) // Если клетка не была посещена
                 {
                     currentRoomId++;
                     int area = countArea(i, j);
                     roomSizes[currentRoomId] = area;
                     roomCount++;
                     maxArea = max(maxArea, area);
+
+                    // // Промежуточный вывод информации
+                    // cout << "\nПосле формирования комнаты " << currentRoomId << ":\n";
+                    // cout << "Размер комнаты: " << area << endl;
+                    //
+                    // cout << "Массив roomIds (идентификаторы комнат):\n";
+                    // for (int x = 0; x < rows; ++x)
+                    // {
+                    //     for (int y = 0; y < cols; ++y)
+                    //     {
+                    //         cout << roomIds[x][y] << " ";
+                    //     }
+                    //     cout << endl;
+                    // }
+                    //
+                    // cout << "Массив visited (посещённые клетки):\n";
+                    // for (int x = 0; x < rows; ++x)
+                    // {
+                    //     for (int y = 0; y < cols; ++y)
+                    //     {
+                    //         cout << visited[x][y] << " ";
+                    //     }
+                    //     cout << endl;
+                    // }
                 }
             }
         }
     }
+
 
     // Находит стену, удаление которой объединяет две комнаты с максимальной площадью
     void findBestWallToRemove(int& maxCombinedArea, pair<int, int>& wallPosition,
@@ -129,15 +154,30 @@ public:
                         int room1 = roomIds[i][j];
                         int room2 = roomIds[nx][ny];
 
+                        // Промежуточный вывод перед проверкой условий
+                        // cout << "Проверяем стену между клетками (" << i << ", " << j << ") и ("
+                        //      << nx << ", " << ny << ") в направлении " << dir << endl;
+
                         if (room1 != room2)
                         {
                             // Если комнаты разные, вычисляем объединённую площадь
                             const int combinedArea = roomSizes[room1] + roomSizes[room2];
+
+                            // cout << "Комнаты " << room1 << " и " << room2 << " имеют площади "
+                            //      << roomSizes[room1] << " и " << roomSizes[room2]
+                            //      << " соответственно. Объединённая площадь: " << combinedArea << endl;
+
                             if (combinedArea > maxCombinedArea)
                             {
+                                // Обновляем максимальную площадь и соответствующие значения
                                 maxCombinedArea = combinedArea;
                                 wallPosition = {i, j};
                                 bestDir = static_cast<Direction>(dir);
+
+                                // cout << "Найдено улучшение! Новая максимальная объединённая площадь: "
+                                //      << maxCombinedArea << endl;
+                                // cout << "Стену следует удалить из клетки (" << i << ", " << j << ") "
+                                //      << "в направлении " << dir << endl;
                             }
                         }
                     }
@@ -145,6 +185,7 @@ public:
             }
         }
     }
+
 
     // Выводит текстовую визуализацию замка
     void printLayout() const
